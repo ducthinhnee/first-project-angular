@@ -1,0 +1,13 @@
+.cart-item{
+    display: flex;
+    align-items: center;
+    justify-self: center;
+}
+
+.name{
+    padding: 4px;
+}
+
+.price{
+    padding: 4px;
+}

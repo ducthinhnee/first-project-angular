@@ -1,0 +1,11 @@
+<h2>Home</h2>
+
+
+    <!-- Parent → Child -->
+    <app-counter
+    [count]="counter"
+    (countChange)="onCounterChange($event)"
+    />
+
+
+<p>Counter hiện tại: {{ counter }}</p>
