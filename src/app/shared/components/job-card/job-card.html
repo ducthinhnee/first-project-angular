@@ -31,9 +31,13 @@
           {{ job.companyName }}
         </div>
 
-        <div class="location text-500">
+        <div class="location text-500 mt-1">
           <i class="pi pi-map-marker mr-1"></i>
-          {{ job.location }}
+          <p-tag
+            [value]="job.location"
+            severity="info"
+            class="job-tag">
+          </p-tag>
         </div>
       </div>
     </div>
