@@ -1,0 +1,36 @@
+.job-card {
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.job-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.job-tag {
+  font-size: 0.7rem;
+}
+
+.salary {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.company-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.company-name {
+  font-weight: 500;
+}
+
+.location {
+  font-size: 0.8rem;
+}

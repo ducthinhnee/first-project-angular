@@ -1,0 +1,106 @@
+<section class="p-5">
+    <div class="container">
+  
+      @if (job$ | async; as job) {
+  
+        <!-- HEADER -->
+        <div class="flex justify-content-between align-items-center mb-4">
+          <div class="flex align-items-center gap-3">
+            <img
+              src="assets/images/google.jpg"
+              class="company-logo"
+            />
+  
+            <div>
+              <h2 class="mb-1">{{ job.title }}</h2>
+              <p class="text-500 mb-2">
+                at {{ job.companyName }}
+              </p>
+  
+              <div class="flex gap-2">
+                <p-tag value="FULL-TIME" severity="success"></p-tag>
+                <p-tag value="Featured" severity="warn"></p-tag>
+              </div>
+            </div>
+          </div>
+  
+          <button
+            pButton
+            label="Apply Now"
+            icon="pi pi-arrow-right"
+          ></button>
+        </div>
+
+        <p-divider></p-divider>
+  
+        <div class="grid p-5">
+          <!-- LEFT CONTENT -->
+          <div class="col-12 lg:col-8">
+  
+            <h4>Job Description</h4>
+            <p class="line-height-3">
+              {{ job.description }}
+            </p>
+  
+            <h4 class="mt-4">Requirements</h4>
+            <ul>
+              @for (req of job.requirements; track req) {
+                <li>{{ req }}</li>
+              }
+            </ul>
+  
+            <h4 class="mt-4">Benefits</h4>
+            <ul>
+              @for (benefit of job.benefits; track benefit) {
+                <li>{{ benefit }}</li>
+              }
+            </ul>
+          </div>
+  
+          <!-- RIGHT SIDEBAR -->
+          <div class="col-12 lg:col-4">
+  
+            <!-- Salary -->
+            <p-card class="mb-3">
+              <strong>Salary (USD)</strong>
+              <h3 class="text-primary mt-2">
+                {{ job.salaryText }}
+              </h3>
+              <p-tag severity="success">Monthly salary</p-tag>
+            </p-card>
+  
+            <!-- Location -->
+            <p-card class="mb-2">
+              <strong class="p-2">Job Location</strong>
+              <p-tag [value]="job.locationText" severity="warn"></p-tag>
+            </p-card>
+  
+            <!-- Overview -->
+            <p-card class="mb-3">
+              <strong>Job Overview</strong>
+  
+              <div class="mt-3 text-500">
+                <p>Level: <p-tag [value]="job.level" severity="warn"></p-tag></p>
+                <p>Status: <p-tag [value]="job.status" severity="success"></p-tag></p>
+                <p>Type: <p-tag [value]="job.jobType" severity="success"></p-tag></p>
+              </div>
+            </p-card>
+  
+            <!-- Tags -->
+            <p-card>
+              <strong>Job Tags</strong>
+  
+              <div class="flex flex-wrap gap-2 mt-3">
+                @for (tag of job.tags; track tag) {
+                  <p-tag [value]="tag" severity="info"></p-tag>
+                }
+              </div>
+            </p-card>
+  
+          </div>
+        </div>
+      }
+  
+    </div>
+  </section>
+  

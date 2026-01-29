@@ -1,0 +1,44 @@
+<p-card class="job-card cursor-pointer" (click)="goToDetail()">
+  <!-- Title -->
+  <h4 class="job-title mb-2">
+    {{ job.title }}
+  </h4>
+
+  <!-- Tag + Salary -->
+  <div class="flex align-items-center gap-2 mb-3">
+    <p-tag
+      [value]="job.jobType"
+      severity="warn"
+      class="job-tag">
+    </p-tag>
+
+    <strong class="text-primary">
+      {{ job.salaryMin | salary:job.salaryMax }}
+    </strong>
+  </div>
+
+  <!-- Company info -->
+  <div class="flex justify-content-between align-items-center">
+    <div class="flex align-items-center gap-2">
+      <img
+        src="assets/images/google.jpg"
+        alt="company"
+        class="company-logo"
+      />
+
+      <div>
+        <div class="company-name">
+          {{ job.companyName }}
+        </div>
+
+        <div class="location text-500">
+          <i class="pi pi-map-marker mr-1"></i>
+          {{ job.location }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookmark -->
+    <i class="pi pi-bookmark text-400"></i>
+  </div>
+</p-card>

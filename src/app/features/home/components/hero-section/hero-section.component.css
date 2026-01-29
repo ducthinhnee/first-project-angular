@@ -1,0 +1,33 @@
+.hero {
+  padding: 5rem 2rem;
+}
+
+/* đảm bảo không bị column */
+.hero-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* text */
+.hero-text h1 {
+  font-size: 3rem;
+  line-height: 1.2;
+}
+
+/* image */
+.hero-image {
+  text-align: right;
+}
+
+.hero-image img {
+  max-width: 420px;
+  width: 100%;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .hero-image {
+    text-align: center;
+    margin-top: 2rem;
+  }
+}
