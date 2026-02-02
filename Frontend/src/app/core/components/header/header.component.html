@@ -1,42 +1,52 @@
-<p-menubar [model]="items">
+<p-menubar [model]="items" class="menubar-custom">
   <ng-template pTemplate="start">
     <strong class="text-xl cursor-pointer" routerLink="/">Jobpilot</strong>
   </ng-template>
 
   <ng-template pTemplate="end">
-
-    @if (!user()) {
-      <button
-        pButton
-        label="Sign In"
-        class="p-button-text"
-        routerLink="/auth/login">
-      </button>
-
-      <button
-        pButton
-        label="Post A Jobs"
-        class="ml-2">
-      </button>
-    }
-
-    @else {
-      <div class="flex align-items-center gap-2">
-        <p-avatar 
-          icon="pi pi-user" 
-          class="mr-2" 
-          size="large" 
-          style="background-color: #ece9fc; color: #2a1261; cursor: pointer" 
-          (click)="menu.toggle($event)">
-        </p-avatar>
-
-        <span class="text-sm font-medium">
-          {{ user()?.email }}
-        </span>
-
-        <p-menu #menu [popup]="true" [model]="userMenu"></p-menu>
+    <div class="flex align-items-center gap-3 w-full">
+      <div class="search-box search-box flex flex-1 px-3">
+        <input
+          pInputText
+          placeholder="Job title, keyword"
+          class="w-full mx-2"
+        />
+        <button pButton label="Find Job"></button>
       </div>
-    }
+
+      @if (!user()) {
+        <button
+          pButton
+          label="Sign In"
+          class="p-button-text"
+          routerLink="/auth/login">
+        </button>
+  
+        <button
+          pButton
+          label="Post A Jobs"
+          class="ml-2">
+        </button>
+      }
+  
+      @else {
+        <div class="flex align-items-center gap-2">
+          <p-avatar 
+            icon="pi pi-user" 
+            class="mr-2" 
+            size="large" 
+            style="background-color: #ece9fc; color: #2a1261; cursor: pointer" 
+            (click)="menu.toggle($event)">
+          </p-avatar>
+  
+          <span class="text-sm font-medium">
+            {{ user()?.email }}
+          </span>
+  
+          <p-menu #menu [popup]="true" [model]="userMenu"></p-menu>
+        </div>
+      }
+    </div>
 
   </ng-template>
 </p-menubar>

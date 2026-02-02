@@ -1,0 +1,22 @@
+<div class="surface-ground p-4">
+  <div class="surface-card p-4 border-round shadow-1">
+
+    <app-profile-tabs />
+
+    <p-card header="Basic Information">
+      <app-personal-info-form (save)="saveProfile($event)" />
+    </p-card>
+
+    <p-card header="Your CV / Resume" class="mt-4">
+      <app-resume-list
+        (upload)="uploadResume($event)"
+        (delete)="deleteResume($event)"
+      />
+    </p-card>
+
+    <p-card>
+      <app-experience-form />
+    </p-card>
+
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <div>
+      <div class="font-medium">{{ resume.name }}</div>
+      <small class="text-500">{{ resume.size }}</small>
+    </div>
+
+    <button
+      pButton
+      icon="pi pi-trash"
+      class="p-button-text p-button-danger"
+      (click)="delete.emit(resume.id)"
+    ></button>
+  </div>
+</p-card>

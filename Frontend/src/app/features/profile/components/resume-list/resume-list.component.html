@@ -1,0 +1,17 @@
+<div class="grid">
+  <div class="col-12 md:col-4" *ngFor="let r of resumes">
+    <app-resume-item
+      [resume]="r"
+      (delete)="delete.emit($event)"
+    />
+  </div>
+
+  <div class="col-12 md:col-4">
+    <p-fileUpload
+      mode="basic"
+      chooseLabel="Add CV / Resume"
+      [auto]="true"
+      (onSelect)="onUpload($event)"
+    ></p-fileUpload>
+  </div>
+</div>

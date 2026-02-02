@@ -1,0 +1,13 @@
+.search-box {
+  min-width: 30rem;
+}
+
+.search-box input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.search-box button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}

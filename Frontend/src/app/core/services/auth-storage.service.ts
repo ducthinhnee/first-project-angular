@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 
 export interface AuthUser {
   email: string;
@@ -13,14 +13,7 @@ export class AuthStorageService {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  user = signal<AuthUser | null>(null);
-
-  constructor() {
-    if (this.isBrowser) {
-      const user = this.getUserFromStorage();
-      this.user.set(user);
-    }
-  }
+  user = signal<AuthUser | null>(this.getUserFromStorage());
 
   setAuth(token: string, user: AuthUser) {
     if (!this.isBrowser) return;

@@ -1,0 +1,17 @@
+<div class="flex flex-column align-items-center gap-2">
+  <p-avatar
+    [image]="image"
+    shape="circle"
+    size="xlarge"
+  ></p-avatar>
+
+  <p-fileUpload
+    mode="basic"
+    chooseLabel="Upload photo"
+    accept="image/*"
+    [auto]="true"
+    (onSelect)="onSelect($event)"
+  ></p-fileUpload>
+
+  <small class="text-500">Max size 5MB</small>
+</div>

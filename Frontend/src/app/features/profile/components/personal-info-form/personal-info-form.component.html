@@ -1,0 +1,81 @@
+<form [formGroup]="form" class="grid" (ngSubmit)="submit()">
+
+  <!-- Avatar -->
+  <div class="col-12 md:col-3 flex justify-content-center align-items-center">
+    <app-avatar-upload />
+  </div>
+
+  <div class="col-12 md:col-9">
+    <div class="grid">
+
+      <div class="col-12 md:col-6">
+        <label class="block mb-1">Full name</label>
+        <input pInputText formControlName="fullName" class="w-full" />
+      </div>
+
+      <div class="col-12 md:col-6">
+        <label class="block mb-1">Title / Headline</label>
+        <input pInputText formControlName="headline" class="w-full" />
+      </div>
+
+      <!-- Experience (Autocomplete Dropdown) -->
+      <div class="col-12 md:col-6">
+        <label class="block mb-1">Experience</label>
+        <p-autocomplete
+          formControlName="experience"
+          [suggestions]="filteredExperiences"
+          (completeMethod)="searchExperience($event)"
+          [dropdown]="true"
+          placeholder="Select..."
+          class="w-full"
+        />
+      </div>
+
+      <!-- Skill (Autocomplete Dropdown) -->
+      <div class="col-12 md:col-6">
+        <label class="block mb-1 flex justify-between align-items-center">
+            Skill
+            <button
+            pButton
+            icon="pi pi-plus"
+            class="p-button-text p-button-sm"
+            type="button"
+            (click)="createSkillDialog.open()"
+            ></button>
+        </label>
+
+        <div class="relative">
+            <p-autocomplete
+                formControlName="education"
+                [suggestions]="filteredSkills()"
+                (completeMethod)="searchSkill($event)"
+                optionLabel="name"
+                [dropdown]="true"
+                placeholder="Select skill"
+                class="w-full"
+            />
+
+            @if(loadingSkills()){
+                <i class="pi pi-spin pi-spinner absolute right-50 top-50 -mt-2 text-gray-500"></i>
+            }
+        </div>
+
+        <app-create-skill-dialog
+            #createSkillDialog
+            (created)="loadSkills()"
+        />
+      </div>
+
+      <div class="col-12">
+        <label class="block mb-1">Personal Website</label>
+        <input pInputText formControlName="website" class="w-full" />
+      </div>
+
+      <div class="col-12 text-right mt-3">
+        <button pButton type="submit" label="Save Changes"></button>
+      </div>
+
+    </div>
+  </div>
+
+</form>

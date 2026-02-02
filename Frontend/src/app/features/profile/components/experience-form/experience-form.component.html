@@ -1,0 +1,106 @@
+<div class="div">
+  <div class="card">
+    <h5 class="mb-3">List Experience</h5>
+    @if (experiences().length === 0) {
+      <p class="text-500">No experience added yet.</p>
+    }
+  
+    @for (exp of experiences(); track exp.id; let i = $index) {
+      <div class="flex justify-content-between align-items-center p-3 border-bottom">
+        <div>
+          <div class="font-medium">
+            {{ exp.position }} – {{ exp.companyName }}
+          </div>
+          <div class="text-500 text-sm">
+            {{ exp.startDate | date:'MM/yyyy' }} –
+            {{ exp.endDate ? (exp.endDate | date:'MM/yyyy') : 'Present' }}
+          </div>
+        </div>
+  
+        <button
+          pButton
+          icon="pi pi-trash"
+          class="p-button-text p-button-danger"
+          (click)="removeExperience(i)">
+        </button>
+      </div>
+    }
+  </div>
+
+  <div class="card">
+      <h5 class="mb-3">Add Experience</h5>
+      @if (successMessage) {
+        <p-message severity="success">{{ successMessage }}</p-message>
+      }
+    
+      @if (errorMessage) {
+        <p-message severity="error">{{ errorMessage }}</p-message>
+      }
+    
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-column gap-3">
+    
+        <div>
+          <input
+            pInputText
+            formControlName="companyName"
+            placeholder="Company name"
+            class="w-full"
+          />
+          @if (hasError('companyName', 'required')) {
+            <small class="text-red-500">Company name is required</small>
+          }
+        </div>
+    
+        <div>
+          <input
+            pInputText
+            formControlName="position"
+            placeholder="Position"
+            class="w-full"
+          />
+          @if (hasError('position', 'required')) {
+            <small class="text-red-500">Position is required</small>
+          }
+        </div>
+    
+        <div class="grid">
+          <div class="col-6">
+            @if(isBrowser){
+              <p-datePicker
+                formControlName="startDate"
+                placeholder="Start date"
+                [showIcon]="true"
+                class="w-full"
+                appendTo="body"
+              ></p-datePicker>
+              @if (hasError('startDate', 'required')) {
+                <small class="text-red-500">Start Date is required</small>
+              }
+            }
+          </div>
+          
+          <div class="col-6">
+            @if(isBrowser){
+              <p-datePicker
+                formControlName="endDate"
+                placeholder="End date"
+                [showIcon]="true"
+                class="w-full"
+              ></p-datePicker>
+            }
+          </div>
+        </div>
+    
+        <button
+          pButton
+          type="submit"
+          label="Add Experience"
+          [loading]="loading"
+          [disabled]="loading"
+          class="w-full"
+        ></button>
+      </form>
+  </div>
+</div>
+
+  

@@ -6,6 +6,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { AuthStorageService } from '../../services/auth-storage.service';
 
+import { InputTextModule } from "primeng/inputtext";
+
 @Component({
   standalone: true,
   selector: 'app-header',
@@ -14,9 +16,11 @@ import { AuthStorageService } from '../../services/auth-storage.service';
     ButtonModule,
     RouterModule,
     AvatarModule,
-    MenuModule
+    MenuModule,
+    InputTextModule
   ],
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
   private authStorage = inject(AuthStorageService);
@@ -35,13 +39,16 @@ export class HeaderComponent {
 
   userMenu = [
     {
-      label: this.user()?.role || 'ROLE',
-      icon: 'pi pi-user',
+      label: 'Role: ' + this.user()?.role || 'ROLE',
+      icon: 'pi pi-cog',
       disabled: true
     },
     {
       label: 'Profile',
-      icon: 'pi pi-user'
+      icon: 'pi pi-user',
+      command: () => {
+        this.router.navigate(['/profile']);
+      }
     },
     {
       label: 'Logout',

@@ -1,0 +1,44 @@
+<p-dialog
+  header="Create new skill"
+  [modal]="true"
+  [closable]="!loading()"
+  [draggable]="false"
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  styleClass="w-30rem"
+>
+  <form [formGroup]="form" class="flex flex-column gap-3">
+    <div>
+      <label class="block mb-1">Skill name</label>
+      <input
+        pInputText
+        formControlName="name"
+        class="w-full"
+        [class.ng-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+        placeholder="Ex: Angular"
+      />
+
+      @if (errorMessage()) {
+        <small class="text-red-500 mt-1 block">
+        {{ errorMessage() }}
+        </small>
+    }
+    </div>
+
+    <div class="flex justify-end gap-2 mt-3">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [disabled]="loading()"
+        (onClick)="close()"
+      />
+
+      <p-button
+        label="Save"
+        [loading]="loading()"
+        [disabled]="form.invalid"
+        (onClick)="submit()"
+      />
+    </div>
+  </form>
+</p-dialog>
