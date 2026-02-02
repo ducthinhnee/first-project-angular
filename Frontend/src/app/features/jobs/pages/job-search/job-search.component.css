@@ -1,0 +1,14 @@
+.job-search-bar {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1.5fr auto;
+  gap: 12px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  align-items: center;
+}
+
+.search-btn {
+  height: 44px;
+}

@@ -1,0 +1,110 @@
+<section class="surface-0 py-5">
+  <div class="container">
+    <!-- 🔍 FILTER BOX -->
+    <div class="surface-card p-4 border-round mb-4 shadow-1">
+      <div class="grid">
+        <div class="col-12 md:col-4">
+          <input
+            pInputText
+            placeholder="Job title or keyword"
+            class="w-full"
+            [ngModel]="draftFilters().keyword"
+            (ngModelChange)="updateDraft('keyword', $event)"
+          />
+        </div>
+
+        <div class="col-12 md:col-4">
+          <input
+            pInputText
+            placeholder="Location"
+            class="w-full"
+            [ngModel]="draftFilters().location"
+            (ngModelChange)="updateDraft('location', $event)"
+          />
+        </div>
+
+        <p-autoComplete
+          [suggestions]="filteredJobTypes"
+          (completeMethod)="searchJobType($event)"
+          field="label"
+          [dropdown]="true"
+          placeholder="Job type"
+          (onSelect)="updateDraft('jobType', $event.value.value)"
+          (onClear)="updateDraft('jobType', null)"
+        ></p-autoComplete>
+
+        <!-- Level -->
+        <p-autoComplete
+          [suggestions]="filteredLevels"
+          (completeMethod)="searchLevel($event)"
+          field="label"
+          [dropdown]="true"
+          placeholder="Level"
+          (onSelect)="updateDraft('level', $event.value.value)"
+          (onClear)="updateDraft('level', null)"
+        ></p-autoComplete>
+
+        <div class="col-12 md:col-3">
+          <input
+            type="number"
+            pInputText
+            placeholder="Min salary"
+            [ngModel]="draftFilters().minSalary"
+            (ngModelChange)="updateDraft('minSalary', $event)"
+          />
+        </div>
+
+        <div class="col-12 md:col-3">
+          <input
+            type="number"
+            pInputText
+            placeholder="Max salary"
+            [ngModel]="draftFilters().maxSalary"
+            (ngModelChange)="updateDraft('maxSalary', $event)"
+          />
+        </div>
+
+        <div class="col-12 md:col-6 flex gap-2 align-items-end">
+          <button pButton label="Search" icon="pi pi-search" (click)="onSearch()"></button>
+
+          <button
+            pButton
+            label="Reset"
+            icon="pi pi-refresh"
+            class="p-button-outlined"
+            (click)="resetFilters()"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    
+
+    @if (!loading() && jobs().length === 0) {
+      <p class="text-center text-500">No jobs found.</p>
+    }
+    @if (loading()) {
+      <div class="flex justify-content-center my-5">
+        <p-progressSpinner></p-progressSpinner>
+      </div>
+    } @else {
+        <div class="grid">
+          @for (job of jobs(); track job.id) {
+            <div class="col-12 md:col-6 lg:col-4">
+              <app-job-card [job]="job"></app-job-card>
+            </div>
+          }
+        </div>
+    }
+
+    <!-- ⏭ PAGINATION -->
+    <div class="mt-4 flex justify-content-center">
+      <p-paginator
+        [rows]="size"
+        [totalRecords]="totalPages()"
+        (onPageChange)="changePage($event.page)"
+      >
+      </p-paginator>
+    </div>
+  </div>
+</section>

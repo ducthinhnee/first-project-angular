@@ -10,9 +10,15 @@ import { Router } from '@angular/router';
 @Component({
   standalone: true,
   selector: 'app-job-card',
-  imports: [CommonModule, CardModule, ButtonModule, TagModule, SalaryPipe],
+  imports: [
+    CommonModule,
+    CardModule,
+    ButtonModule,
+    TagModule,
+    SalaryPipe
+  ],
   templateUrl: './job-card.html',
-  styleUrls: ['./job-card.css'],
+  styleUrls: ['./job-card.css']
 })
 export class JobCardComponent {
   @Input() job!: Job;

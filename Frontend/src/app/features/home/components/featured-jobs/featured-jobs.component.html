@@ -1,9 +1,9 @@
-<div class="flex justify-content-between align-items-center">
+<div class="flex justify-content-between align-items-center mx-4">
     <h3>Featured Job</h3>
     <a class="text-primary cursor-pointer">View All →</a>
 </div>
 
-<div class="grid">
+<div class="grid mx-4">
     @for (job of jobs$ | async; track job.id) {
         <div class="col-12 sm:col-6 lg:col-4">
           <app-job-card [job]="job"></app-job-card>
@@ -11,7 +11,7 @@
       }
 
     @if (loading) {
-      <div class="text-center mt-4">
+      <div class="col-12 flex justify-content-center align-items-center" style="min-height: 400px;">
         <p-progressSpinner></p-progressSpinner>
       </div>
     }

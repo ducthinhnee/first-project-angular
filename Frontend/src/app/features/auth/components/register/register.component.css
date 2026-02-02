@@ -1,0 +1,25 @@
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.auth-card {
+  width: 460px;
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
+}
+
+.logo {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.or {
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #999;
+}

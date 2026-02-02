@@ -3,6 +3,7 @@ import { delay, Observable, of } from 'rxjs';
 import { Job } from '../models/job.model';
 import { ApiService } from '../../../core/services/api.service';
 import { PageResponse } from '../../../shared/models/page-response.model';
+import { JobSearchParams } from '../../../shared/models/jobsearch-params.model';
 
 @Injectable({ providedIn: 'root' })
 export class JobsService {
@@ -18,7 +19,7 @@ export class JobsService {
   }
 
   getJobByIdApi(id: number): Observable<Job> {
-    return this.api.get<Job>(`${this.BASE_URL}/${id}`);
+    return this.api.get<Job>(`${this.BASE_URL}${id}`);
   }
 
   getJobByIdMock(id: number): Observable<Job> {
@@ -52,5 +53,24 @@ export class JobsService {
     const job = mockJobs.find((j) => j.id === id)!;
 
     return of(job).pipe(delay(500));
+  }
+
+  searchJobs(params: JobSearchParams): Observable<PageResponse<Job>> {
+    const queryParams: any = {
+      page: params.page ?? 0,
+      size: params.size ?? 10
+    };
+
+    if (params.keyword) queryParams.keyword = params.keyword;
+    if (params.location) queryParams.location = params.location;
+    if (params.jobType) queryParams.jobType = params.jobType;
+    if (params.level) queryParams.level = params.level;
+    if (params.minSalary != null) queryParams.minSalary = params.minSalary;
+    if (params.maxSalary != null) queryParams.maxSalary = params.maxSalary;
+
+    return this.api.get<PageResponse<Job>>(
+      `${this.BASE_URL}`,
+      queryParams
+    );
   }
 }

@@ -2,7 +2,6 @@
   padding: 5rem 2rem;
 }
 
-/* đảm bảo không bị column */
 .hero-wrapper {
   max-width: 1200px;
   margin: 0 auto;

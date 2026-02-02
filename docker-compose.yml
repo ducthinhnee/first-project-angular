@@ -1,0 +1,69 @@
+services:
+  mysql:
+    image: mysql:8.0
+
+    container_name: mysql-db
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+    expose:
+      - "3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+      - ./Backend/db:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+
+      interval: 10s
+
+      timeout: 5s
+
+      retries: 5
+
+    networks:
+      - app-network
+
+  backend:
+    build: ./Backend
+
+    container_name: spring-backend
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    expose:
+      - "8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
+    networks:
+      - app-network
+
+  frontend:
+    build: ./Frontend
+    container_name: angular-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

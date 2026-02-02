@@ -1,10 +1,42 @@
 <p-menubar [model]="items">
   <ng-template pTemplate="start">
-    <strong class="text-xl">Jobpilot</strong>
+    <strong class="text-xl cursor-pointer" routerLink="/">Jobpilot</strong>
   </ng-template>
 
   <ng-template pTemplate="end">
-    <button pButton label="Sign In" class="p-button-text"></button>
-    <button pButton label="Post A Jobs" class="ml-2"></button>
+
+    @if (!user()) {
+      <button
+        pButton
+        label="Sign In"
+        class="p-button-text"
+        routerLink="/auth/login">
+      </button>
+
+      <button
+        pButton
+        label="Post A Jobs"
+        class="ml-2">
+      </button>
+    }
+
+    @else {
+      <div class="flex align-items-center gap-2">
+        <p-avatar 
+          icon="pi pi-user" 
+          class="mr-2" 
+          size="large" 
+          style="background-color: #ece9fc; color: #2a1261; cursor: pointer" 
+          (click)="menu.toggle($event)">
+        </p-avatar>
+
+        <span class="text-sm font-medium">
+          {{ user()?.email }}
+        </span>
+
+        <p-menu #menu [popup]="true" [model]="userMenu"></p-menu>
+      </div>
+    }
+
   </ng-template>
 </p-menubar>

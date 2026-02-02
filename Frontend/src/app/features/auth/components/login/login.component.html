@@ -1,0 +1,91 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="logo">Jobpilot</div>
+
+    <h2>Sign in</h2>
+    <p class="text-500">
+      Don’t have account?
+      <a routerLink="/auth/register">Create Account</a>
+    </p>
+
+    @if (successMessage() != null) {
+        <p-message severity="success" class="mb-2">
+          {{ successMessage() }}
+        </p-message>
+    }
+
+    @if (errorMessage() != null) {
+        <p-message severity="error" class="mb-2">
+          {{ errorMessage() }}
+        </p-message>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <input
+        pInputText
+        formControlName="email"
+        placeholder="Email address"
+        class="w-full mb-2"
+      />
+
+      @if (form.get('email')?.touched && form.get('email')?.invalid) {
+        <div class="mb-3">
+            <small class="text-red-500">
+                Email không hợp lệ
+            </small>
+        </div>
+        }   
+
+      <p-password
+        formControlName="password"
+        placeholder="Password"
+        [feedback]="false"
+        toggleMask
+        class="w-full"
+      ></p-password>
+
+      @if (form.get('password')?.touched && form.get('password')?.invalid) {
+        <div class="mb-3">
+            <small class="text-red-500">
+                Pass không hợp lệ
+            </small>
+        </div>
+        }   
+
+      <div class="flex justify-content-between align-items-center my-2">
+        <div class="flex items-center gap-1">
+            <p-checkbox
+              formControlName="rememberMe"
+              binary="true">
+            </p-checkbox>
+            <label for="ingredient1" class="ml-2"> Remember me </label>
+        </div>
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        label="Sign in →"
+        class="w-full"
+        [loading]="loading()"
+      ></button>
+
+    </form>
+
+    <div class="or">OR</div>
+
+    <button
+      pButton
+      label="Sign up with Facebook"
+      icon="pi pi-facebook"
+      class="p-button-outlined w-full mb-2"
+    ></button>
+    <button
+      pButton
+      label="Sign up with Google"
+      icon="pi pi-google"
+      class="p-button-outlined w-full"
+    ></button>
+  </div>
+</div>

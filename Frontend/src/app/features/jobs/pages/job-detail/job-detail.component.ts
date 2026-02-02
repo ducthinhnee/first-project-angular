@@ -1,30 +1,32 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobsService } from '../../services/jobs.service';
-import { map, switchMap } from 'rxjs';
+import { finalize, map, Observable, switchMap } from 'rxjs';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { AsyncPipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { Job } from '../../models/job.model';
 
 @Component({
   selector: 'app-job-detail',
   standalone: true,
   templateUrl: './job-detail.component.html',
   styleUrls: ['./job-detail.component.css'],
-  imports: [CardModule, TagModule, AsyncPipe, ButtonModule, DividerModule],
+  imports: [CardModule, TagModule, AsyncPipe, ButtonModule, DividerModule, ProgressSpinnerModule],
 })
 export class JobDetailComponent {
   private route = inject(ActivatedRoute);
   private jobsService = inject(JobsService);
 
   job$ = this.route.paramMap.pipe(
-    switchMap((params) => this.jobsService.getJobByIdMock(Number(params.get('id')))),
+    switchMap((params) => 
+      this.jobsService.getJobByIdApi(Number(params.get('id')))
+    ),
     map((job) => ({
       ...job,
-
-      // 🔥 mock thêm nếu backend chưa có
       description: job.description || MOCK.description,
       benefits: MOCK.benefits,
       requirements: MOCK.requirements,
