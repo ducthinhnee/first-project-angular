@@ -5,10 +5,8 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.ExperienceMapper;
 import com.example.demo.model.CandidateProfile;
 import com.example.demo.model.Experience;
-import com.example.demo.model.User;
 import com.example.demo.repository.CandidateProfileRepository;
 import com.example.demo.repository.ExperienceRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.services.ExperienceService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +33,8 @@ public class ExperienceServiceImp implements ExperienceService {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         CandidateProfile profile = candidateProfileRepository.findByUserEmail(userEmail)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Candidate profile not found with emailemail: " + userEmail));
+                        () -> new ResourceNotFoundException(
+                                "Candidate profile not found with emailemail: " + userEmail));
         Experience experience = experienceMapper.toEntity(request);
         experience.setProfile(profile);
         return experienceMapper.toDto(experienceRepository.save(experience));
@@ -66,7 +65,7 @@ public class ExperienceServiceImp implements ExperienceService {
         CandidateProfile profile = candidateProfileRepository.findByUserEmail(username)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Candidate profile not found with email: " + username));
-                
+
         return experienceRepository.findByProfileId(profile.getId()).stream()
                 .map(experienceMapper::toDto)
                 .collect(Collectors.toList());
@@ -75,12 +74,10 @@ public class ExperienceServiceImp implements ExperienceService {
     private void validateOwnership(Long experienceId) {
         Experience experience = experienceRepository.findById(experienceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + experienceId));
-    
-        // Lấy CandidateProfile từ Experience
+
         CandidateProfile profile = experience.getProfile();
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-    
-        // Kiểm tra xem CandidateProfile có thuộc về userId hiện tại không
+
         if (!profile.getUser().getEmail().equals(username)) {
             throw new AccessDeniedException("You do not have permission to access this resource.");
         }

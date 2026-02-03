@@ -14,4 +14,12 @@ export class ExperienceService {
   createExperience(payload: ExperiencePayload) {
     return this.api.post<ExperiencePayload>(`${this.BASE_URL}/candidate-profile`, payload);
   }
+
+  getMyExperiences() {
+    return this.api.get<ExperiencePayload[]>(this.BASE_URL);
+  }
+
+  deleteExperience(id: number) {
+    return this.api.delete<void>(`${this.BASE_URL}/${id}`);
+  }
 }

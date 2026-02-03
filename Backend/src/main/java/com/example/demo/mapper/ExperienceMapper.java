@@ -16,7 +16,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring")
 public interface ExperienceMapper {
 
-    @Mapping(source = "profile.id", target = "profileId")
     ExperienceDTO toDto(Experience experience);
 
     @Mapping(target = "profile", ignore = true)

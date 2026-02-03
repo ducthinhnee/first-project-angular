@@ -22,15 +22,15 @@ public class ExperienceController {
 
     private final ExperienceService experienceService;
 
-    @GetMapping("/profile/{profileId}")
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @GetMapping
+    @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Get experiences by profile ID", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<ExperienceDTO>> getExperiencesByProfileId(@PathVariable Long profileId) {
-        return ResponseEntity.ok(experienceService.getExperiencesByProfileId(profileId));
+    public ResponseEntity<List<ExperienceDTO>> getExperiencesByProfileId() {
+        return ResponseEntity.ok(experienceService.getExperiencesByProfileId());
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Update experience by ID (Requires matching profileId in body)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ExperienceDTO> updateExperience(@PathVariable Long id,
             @RequestBody ExperienceDTO experienceDTO) {
@@ -38,19 +38,19 @@ public class ExperienceController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Delete experience by ID (Requires matching profileId param)", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Void> deleteExperience(@PathVariable Long id, @RequestParam Long profileId) {
+    public ResponseEntity<Void> deleteExperience(@PathVariable Long id) {
         experienceService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).header("message", "Deleted experience successfully")
+                .build();
     }
 
-    @PostMapping("/candidate/{candidateId}")
-    @PreAuthorize("hasRole('EMPLOYER')")
+    @PostMapping("/candidate-profile")
+    @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Create experience for candidate", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ExperienceDTO> createExperience(@PathVariable Long candidateId,
-            @RequestBody ExperienceDTO experienceDTO) {
-        return new ResponseEntity<>(experienceService.createForCandidate(candidateId, experienceDTO),
+    public ResponseEntity<ExperienceDTO> createExperience(@RequestBody ExperienceDTO experienceDTO) {
+        return new ResponseEntity<>(experienceService.createForCandidate(experienceDTO),
                 HttpStatus.CREATED);
     }
 }

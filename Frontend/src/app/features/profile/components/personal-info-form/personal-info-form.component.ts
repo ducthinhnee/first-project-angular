@@ -10,6 +10,7 @@ import { AvatarUploadComponent } from '../avatar-upload/avatar-upload.component'
 import { SkillService } from '../../services/skill.service';
 import { Skill } from '../../models/skill.model';
 import { CreateSkillDialogComponent } from '../create-skill-dialog/create-skill-dialog.component';
+import { CandidateProfileService } from '../../services/candidate-profile.service';
 
 interface AutoCompleteCompleteEvent {
   originalEvent: Event;
@@ -32,6 +33,8 @@ interface AutoCompleteCompleteEvent {
 })
 export class PersonalInfoFormComponent implements OnInit {
   @Output() save = new EventEmitter<any>();
+  successMessage = signal('');
+  errorMessage = signal('');
 
   // form
   private fb = inject(FormBuilder);
@@ -39,15 +42,15 @@ export class PersonalInfoFormComponent implements OnInit {
     fullName: [''],
     headline: [''],
     experience: [null],
-    education: [null],
+    education: [[] as Skill[]],
     website: [''],
   });
   
   // skill
   private skillService = inject(SkillService);
   loadingSkills = signal(false);
-    skills = signal<Skill[]>([]);
-    filteredSkills = signal<Skill[]>([]);
+  skills = signal<Skill[]>([]);
+  filteredSkills = signal<Skill[]>([]);
   
   searchSkill(event: AutoCompleteCompleteEvent) {
     const query = event.query.toLowerCase();
@@ -61,6 +64,7 @@ export class PersonalInfoFormComponent implements OnInit {
 
   ngOnInit() {
     this.loadSkills();
+    this.loadProfile();
   }
 
   loadSkills() {
@@ -68,29 +72,60 @@ export class PersonalInfoFormComponent implements OnInit {
 
     this.skillService.getSkills().subscribe({
         next: (data) => {
-        this.skills.set(data);
-        this.filteredSkills.set(data);
-        this.loadingSkills.set(false);
+          this.skills.set(data);
+          this.filteredSkills.set(data);
+          this.loadingSkills.set(false);
         },
         error: (err) => {
-        console.error(err);
-        this.loadingSkills.set(false);
+          console.error(err);
+          this.loadingSkills.set(false);
         }
     });
   }
 
-  // experienece
-  experienceOptions = ['Junior', 'Mid', 'Senior'];
-  filteredExperiences: string[] = [];
+  // profile
+  private profileService = inject(CandidateProfileService);
 
-  searchExperience(event: AutoCompleteCompleteEvent) {
-    this.filteredExperiences = this.experienceOptions.filter(opt =>
-      opt.toLowerCase().includes(event.query.toLowerCase())
-    );
+  loadProfile() {
+    this.profileService.getProfile().subscribe({
+      next: (profile) => {
+        this.form.patchValue({
+          fullName: profile.fullName,
+          headline: profile.phone,
+          website: profile.summary,
+          education: profile.skills   // map skills vào autocomplete
+        });
+      },
+      error: () => {
+        this.errorMessage.set('Failed to load profile');
+      }
+    });
   }
 
-
   submit() {
-    this.save.emit(this.form.value);
+    if (this.form.invalid) return;
+
+    const value = this.form.value;
+
+    const payload = {
+      fullName: value.fullName!,
+      phone: value.headline!,
+      summary: value.website!,
+      skills: (value.education || []).map((s: Skill) => ({
+        id: s.id
+      }))
+    };
+
+    this.successMessage.set('');
+    this.errorMessage.set('');
+
+    this.profileService.updateProfile(payload).subscribe({
+      next: () => {
+        this.successMessage.set('Profile updated successfully');
+      },
+      error: (err) => {
+        this.errorMessage.set(err.error?.message || 'Update failed');
+      }
+    });
   }
 }

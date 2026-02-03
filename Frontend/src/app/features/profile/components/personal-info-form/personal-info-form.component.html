@@ -1,3 +1,11 @@
+@if (successMessage()) {
+  <div class="mb-2 text-green-600">{{ successMessage() }}</div>
+}
+
+@if (errorMessage()) {
+  <div class="mb-2 text-red-600">{{ errorMessage() }}</div>
+}
+
 <form [formGroup]="form" class="grid" (ngSubmit)="submit()">
 
   <!-- Avatar -->
@@ -19,28 +27,18 @@
       </div>
 
       <!-- Experience (Autocomplete Dropdown) -->
-      <div class="col-12 md:col-6">
-        <label class="block mb-1">Experience</label>
-        <p-autocomplete
-          formControlName="experience"
-          [suggestions]="filteredExperiences"
-          (completeMethod)="searchExperience($event)"
-          [dropdown]="true"
-          placeholder="Select..."
-          class="w-full"
-        />
-      </div>
+      
 
       <!-- Skill (Autocomplete Dropdown) -->
       <div class="col-12 md:col-6">
         <label class="block mb-1 flex justify-between align-items-center">
             Skill
             <button
-            pButton
-            icon="pi pi-plus"
-            class="p-button-text p-button-sm"
-            type="button"
-            (click)="createSkillDialog.open()"
+              pButton
+              icon="pi pi-plus"
+              class="p-button-text p-button-sm"
+              type="button"
+              (click)="createSkillDialog.open()"
             ></button>
         </label>
 
@@ -48,6 +46,7 @@
             <p-autocomplete
                 formControlName="education"
                 [suggestions]="filteredSkills()"
+                [multiple]="true"
                 (completeMethod)="searchSkill($event)"
                 optionLabel="name"
                 [dropdown]="true"

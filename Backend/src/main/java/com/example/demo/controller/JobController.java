@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -111,4 +112,23 @@ public class JobController {
                 JobDTO job = jobService.getById(id);
                 return ResponseEntity.ok(job);
         }
+
+        @GetMapping("/my-company")
+        @PreAuthorize("hasRole('EMPLOYER')")
+        @Operation(summary = "Get all jobs of employer", security = @SecurityRequirement(name = "bearerAuth"))
+        public List<JobDTO> getMyCompanyJobs() {
+                return jobService.getJobsOfEmployer();
+        }
+
+        @PostMapping("/my-company")
+        @PreAuthorize("hasRole('EMPLOYER')")
+        @Operation(summary = "Create a new job for my company", description = "Creates a new job posting.", security = @SecurityRequirement(name = "bearerAuth"))
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Job created successfully"),
+                        @ApiResponse(responseCode = "400", description = "Invalid input")
+        })
+        public JobDTO createJobCompany(@Valid @RequestBody JobRequest request) {
+                return jobService.createJobForMyCompany(request);
+        }
+
 }

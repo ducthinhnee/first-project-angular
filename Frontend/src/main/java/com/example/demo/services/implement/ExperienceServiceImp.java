@@ -29,11 +29,12 @@ public class ExperienceServiceImp implements ExperienceService {
 
     @Override
     @Transactional
-    public ExperienceDTO createForCandidate(Long candidateId, ExperienceDTO request) {
-        validateOwnership(candidateId);
-        CandidateProfile profile = candidateProfileRepository.findById(candidateId)
+    public ExperienceDTO createForCandidate(ExperienceDTO request) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        CandidateProfile profile = candidateProfileRepository.findByUserEmail(userEmail)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Candidate profile not found with id: " + candidateId));
+                        () -> new ResourceNotFoundException(
+                                "Candidate profile not found with emailemail: " + userEmail));
         Experience experience = experienceMapper.toEntity(request);
         experience.setProfile(profile);
         return experienceMapper.toDto(experienceRepository.save(experience));
@@ -44,7 +45,7 @@ public class ExperienceServiceImp implements ExperienceService {
     public ExperienceDTO update(ExperienceDTO request) {
         Experience experience = experienceRepository.findById(request.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + request.getId()));
-        validateOwnership(experience.getProfile().getId());
+        validateOwnership(request.getId());
         experienceMapper.updateEntity(experience, request);
         return experienceMapper.toDto(experience);
     }
@@ -54,24 +55,30 @@ public class ExperienceServiceImp implements ExperienceService {
     public void delete(Long id) {
         Experience experience = experienceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + id));
-        validateOwnership(experience.getProfile().getId());
+        validateOwnership(id);
         experienceRepository.delete(experience);
     }
 
     @Override
-    public List<ExperienceDTO> getExperiencesByProfileId(Long profileId) {
-        validateOwnership(profileId);
-        return experienceRepository.findByProfileId(profileId).stream()
+    public List<ExperienceDTO> getExperiencesByProfileId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        CandidateProfile profile = candidateProfileRepository.findByUserEmail(username)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Candidate profile not found with email: " + username));
+
+        return experienceRepository.findByProfileId(profile.getId()).stream()
                 .map(experienceMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    private void validateOwnership(Long profileId) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        CandidateProfile userProfile = candidateProfileRepository.findByUserEmail(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found for current user"));
+    private void validateOwnership(Long experienceId) {
+        Experience experience = experienceRepository.findById(experienceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Experience not found with id: " + experienceId));
 
-        if (!userProfile.getId().equals(profileId)) {
+        CandidateProfile profile = experience.getProfile();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (!profile.getUser().getEmail().equals(username)) {
             throw new AccessDeniedException("You do not have permission to access this resource.");
         }
     }

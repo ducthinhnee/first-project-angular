@@ -40,9 +40,10 @@ public class ExperienceController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(summary = "Delete experience by ID (Requires matching profileId param)", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Void> deleteExperience(@PathVariable Long id, @RequestParam Long profileId) {
+    public ResponseEntity<Void> deleteExperience(@PathVariable Long id) {
         experienceService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).header("message", "Deleted experience successfully")
+                .build();
     }
 
     @PostMapping("/candidate-profile")

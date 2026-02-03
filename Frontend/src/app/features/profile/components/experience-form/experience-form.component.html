@@ -1,6 +1,14 @@
 <div class="div">
   <div class="card">
-    <h5 class="mb-3">List Experience</h5>
+    @if (successMessage) {
+      <p-message severity="success">{{ successMessage }}</p-message>
+    }
+  
+    @if (errorMessage) {
+      <p-message severity="error">{{ errorMessage }}</p-message>
+    }
+    
+    <h4 class="mb-3">List Experience</h4>
     @if (experiences().length === 0) {
       <p class="text-500">No experience added yet.</p>
     }
@@ -21,22 +29,15 @@
           pButton
           icon="pi pi-trash"
           class="p-button-text p-button-danger"
-          (click)="removeExperience(i)">
+          (click)="removeExperience(exp.id!, i)">
         </button>
       </div>
     }
   </div>
 
   <div class="card">
-      <h5 class="mb-3">Add Experience</h5>
-      @if (successMessage) {
-        <p-message severity="success">{{ successMessage }}</p-message>
-      }
-    
-      @if (errorMessage) {
-        <p-message severity="error">{{ errorMessage }}</p-message>
-      }
-    
+      <h4 class="mb-3">Add Experience</h4>
+  
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-column gap-3">
     
         <div>
@@ -95,8 +96,8 @@
           pButton
           type="submit"
           label="Add Experience"
-          [loading]="loading"
-          [disabled]="loading"
+          [loading]="loading()"
+          [disabled]="loading() || form.invalid"
           class="w-full"
         ></button>
       </form>

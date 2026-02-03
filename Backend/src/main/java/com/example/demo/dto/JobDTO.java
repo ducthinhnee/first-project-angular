@@ -6,10 +6,13 @@ import com.example.demo.model.JobLevel;
 import com.example.demo.model.JobStatus;
 import com.example.demo.model.JobType;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
+@Builder
 public class JobDTO {
 
     private Long id;
@@ -24,5 +27,7 @@ public class JobDTO {
     private JobType jobType;
     private JobLevel level;
     private JobStatus status;
+
+    private Long totalApplicants;
 }
 

@@ -1,9 +1,12 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.CandidateProfileDTO;
+import com.example.demo.request.CandidateProfileRequest;
 
 public interface CandidateProfileService {
-    CandidateProfileDTO getCandidateProfile(Long id);
+    CandidateProfileDTO getCandidateProfile();
+
     CandidateProfileDTO createCandidateProfile(CandidateProfileDTO candidateProfileDTO);
-    CandidateProfileDTO updateCandidateProfile(Long id, CandidateProfileDTO candidateProfileDTO);
+
+    CandidateProfileDTO updateCandidateProfile(CandidateProfileRequest candidateProfileDTO);
 }

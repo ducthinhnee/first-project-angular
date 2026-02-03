@@ -1,5 +1,7 @@
 package com.example.demo.mapper;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +17,8 @@ public interface JobMapper {
 
     @Mapping(source = "company.name", target = "companyName")
     JobDTO toDTO(Job job);
+
+    List<JobDTO> toDTOList(List<Job> jobs);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", constant = "OPEN")

@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,4 +28,8 @@ public interface JobService {
             BigDecimal minSalary,
             BigDecimal maxSalary,
             Pageable pageable);
+
+    public List<JobDTO> getJobsOfEmployer();
+
+    public JobDTO createJobForMyCompany(JobRequest request);
 }

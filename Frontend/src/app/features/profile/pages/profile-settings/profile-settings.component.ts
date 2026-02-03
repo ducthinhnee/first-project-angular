@@ -16,7 +16,7 @@ import { ExperienceFormComponent } from '../../components/experience-form/experi
     ProfileTabsComponent,
     PersonalInfoFormComponent,
     ResumeListComponent,
-    ExperienceFormComponent,
+    ExperienceFormComponent
   ],
   templateUrl: './profile-settings.component.html',
 })

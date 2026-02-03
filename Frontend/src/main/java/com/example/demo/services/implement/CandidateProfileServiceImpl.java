@@ -1,8 +1,6 @@
 package com.example.demo.services.implement;
 
 import com.example.demo.dto.CandidateProfileDTO;
-import com.example.demo.dto.ExperienceDTO;
-import com.example.demo.dto.ResumeDTO;
 import com.example.demo.dto.SkillDTO;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.CandidateProfileMapper;
@@ -16,15 +14,14 @@ import com.example.demo.model.User;
 import com.example.demo.repository.CandidateProfileRepository;
 import com.example.demo.repository.SkillRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.request.CandidateProfileRequest;
 import com.example.demo.services.CandidateProfileService;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.security.access.AccessDeniedException;
@@ -42,15 +39,14 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
     private final ExperienceMapper experienceMapper;
     private final ResumeMapper resumeMapper;
     private final SkillRepository skillRepository;
-    private final ExperienceServiceImp experienceService;
-    private final ResumeServiceImpl resumeService;
 
     @Override
-    public CandidateProfileDTO getCandidateProfile(Long id) {
-        validateOwnership(id);
-        return candidateProfileRepository.findById(id)
+    public CandidateProfileDTO getCandidateProfile() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return candidateProfileRepository.findByUserEmail(username)
                 .map(candidateProfileMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate profile not found with id: " + id));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Candidate profile not found with username: " + username));
     }
 
     @Override
@@ -99,10 +95,12 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
     @Override
     @Transactional
-    public CandidateProfileDTO updateCandidateProfile(Long id, CandidateProfileDTO candidateProfileDTO) {
-        validateOwnership(id);
-        CandidateProfile existingProfile = candidateProfileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Candidate profile not found with id: " + id));
+    public CandidateProfileDTO updateCandidateProfile(CandidateProfileRequest candidateProfileDTO) {
+        // validateOwnership(id);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        CandidateProfile existingProfile = candidateProfileRepository.findByUserEmail(username)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Candidate profile not found with username: " + username));
 
         // update field basic information
         existingProfile.setFullName(candidateProfileDTO.getFullName());
@@ -122,15 +120,15 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
             existingProfile.setSkills(skills);
         }
 
-        // Update experiences
-        if (candidateProfileDTO.getExperiences() != null) {
-            syncExperiences(existingProfile, candidateProfileDTO.getExperiences());
-        }
+        // // Update experiences
+        // if (candidateProfileDTO.getExperiences() != null) {
+        // syncExperiences(existingProfile, candidateProfileDTO.getExperiences());
+        // }
 
-        // Update resumes
-        if (candidateProfileDTO.getResumes() != null) {
-            syncResumes(existingProfile, candidateProfileDTO.getResumes());
-        }
+        // // Update resumes
+        // if (candidateProfileDTO.getResumes() != null) {
+        // syncResumes(existingProfile, candidateProfileDTO.getResumes());
+        // }
         return candidateProfileMapper.toDto(candidateProfileRepository.save(existingProfile));
     }
 
@@ -144,47 +142,48 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         }
     }
 
-    private void syncExperiences(CandidateProfile profile, List<ExperienceDTO> dtos) {
-        Map<Long, Experience> existingMap = profile.getExperiences().stream()
-                .collect(Collectors.toMap(Experience::getId, Function.identity()));
+    // private void syncExperiences(CandidateProfile profile, List<ExperienceDTO>
+    // dtos) {
+    // Map<Long, Experience> existingMap = profile.getExperiences().stream()
+    // .collect(Collectors.toMap(Experience::getId, Function.identity()));
 
-        for (ExperienceDTO dto : dtos) {
-            if (dto.getId() != null && existingMap.containsKey(dto.getId())) {
-                // UPDATE
-                experienceService.update(dto);
-                existingMap.remove(dto.getId());
-            } else {
-                // INSERT
-                experienceService.createForCandidate(profile.getId(), dto);
-            }
-        }
+    // for (ExperienceDTO dto : dtos) {
+    // if (dto.getId() != null && existingMap.containsKey(dto.getId())) {
+    // // UPDATE
+    // experienceService.update(dto);
+    // existingMap.remove(dto.getId());
+    // } else {
+    // // INSERT
+    // experienceService.createForCandidate(profile.getId(), dto);
+    // }
+    // }
 
-        // Any items left in the map are to be deleted
-        existingMap.keySet().forEach(experienceId -> {
-            profile.getExperiences().removeIf(
-                    ex -> ex.getId() != null && ex.getId().equals(experienceId));
-        });
-    }
+    // // Any items left in the map are to be deleted
+    // existingMap.keySet().forEach(experienceId -> {
+    // profile.getExperiences().removeIf(
+    // ex -> ex.getId() != null && ex.getId().equals(experienceId));
+    // });
+    // }
 
-    private void syncResumes(CandidateProfile profile, List<ResumeDTO> dtos) {
-        Map<Long, Resume> existingMap = profile.getResumes().stream()
-                .collect(Collectors.toMap(Resume::getId, Function.identity()));
+    // private void syncResumes(CandidateProfile profile, List<ResumeDTO> dtos) {
+    // Map<Long, Resume> existingMap = profile.getResumes().stream()
+    // .collect(Collectors.toMap(Resume::getId, Function.identity()));
 
-        for (ResumeDTO dto : dtos) {
-            if (dto.getId() != null && existingMap.containsKey(dto.getId())) {
-                // UPDATE
-                resumeService.update(dto);
-                existingMap.remove(dto.getId());
-            } else {
-                // INSERT
-                resumeService.createForCandidate(profile.getId(), dto);
-            }
-        }
+    // for (ResumeDTO dto : dtos) {
+    // if (dto.getId() != null && existingMap.containsKey(dto.getId())) {
+    // // UPDATE
+    // resumeService.update(dto);
+    // existingMap.remove(dto.getId());
+    // } else {
+    // // INSERT
+    // resumeService.createForCandidate(profile.getId(), dto);
+    // }
+    // }
 
-        // Any items left in the map are to be deleted
-        existingMap.keySet().forEach(resumeId -> {
-            profile.getResumes().removeIf(
-                    resume -> resume.getId() != null && resume.getId().equals(resumeId));
-        });
-    }
+    // // Any items left in the map are to be deleted
+    // existingMap.keySet().forEach(resumeId -> {
+    // profile.getResumes().removeIf(
+    // resume -> resume.getId() != null && resume.getId().equals(resumeId));
+    // });
+    // }
 }

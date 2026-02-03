@@ -5,8 +5,11 @@ import com.example.demo.exception.EmailAlreadyExistsException;
 import com.example.demo.exception.InvalidCredentialsException;
 import com.example.demo.model.User;
 import com.example.demo.model.CandidateProfile;
+import com.example.demo.model.Company;
+import com.example.demo.model.Role;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.CandidateProfileRepository;
+import com.example.demo.repository.CompanyRepository;
 import com.example.demo.request.LoginRequest;
 import com.example.demo.request.RegisterRequest;
 import com.example.demo.response.AuthResponse;
@@ -30,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
+    private final CompanyRepository companyRepository;
 
     @Override
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -44,9 +48,16 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         // Create empty CandidateProfile for the new user
-        CandidateProfile candidateProfile = new CandidateProfile();
-        candidateProfile.setUser(user);
-        candidateProfileRepository.save(candidateProfile);
+        if (registerRequest.getRole() == Role.CANDIDATE) {
+            CandidateProfile candidateProfile = new CandidateProfile();
+            candidateProfile.setUser(user);
+            candidateProfileRepository.save(candidateProfile);
+        } else if (registerRequest.getRole() == Role.EMPLOYER) {
+            Company company = new Company();
+            company.setUser(user);
+            company.setName("");
+            companyRepository.save(company);
+        }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(registerRequest.getEmail());
         String token = jwtUtil.generateToken(userDetails);

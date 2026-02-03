@@ -8,7 +8,8 @@ import com.example.demo.model.JobType;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class JobRequest {
     private Long companyId;
     private String title;

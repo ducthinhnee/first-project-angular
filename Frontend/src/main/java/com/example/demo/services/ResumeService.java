@@ -1,13 +1,15 @@
 package com.example.demo.services;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.demo.dto.ResumeDTO;
 
 public interface ResumeService {
-    ResumeDTO getResumeById(Long id);
+    public List<ResumeDTO> getResume();
 
-    ResumeDTO createForCandidate(Long candidateId, ResumeDTO resumeDTO);
+    public void delete(Long resumeId);
 
-    ResumeDTO update(ResumeDTO request);
-
-    void delete(Long id);
+    public ResumeDTO uploadResume(MultipartFile file);
 }

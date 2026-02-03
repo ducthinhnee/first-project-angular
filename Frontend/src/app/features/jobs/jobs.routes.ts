@@ -5,10 +5,10 @@ import { JobSearchComponent } from './pages/job-search/job-search.component';
 export const jobsRoutes: Routes = [
   {
     path: '',
-    component: JobSearchComponent
+    component: JobSearchComponent,
   },
   {
     path: ':id',
-    component: JobDetailComponent
+    component: JobDetailComponent,
   },
 ];

@@ -1,9 +1,12 @@
 package com.example.demo.services.implement;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +15,9 @@ import com.example.demo.mapper.JobMapper;
 import com.example.demo.model.Company;
 import com.example.demo.model.Job;
 import com.example.demo.model.JobLevel;
+import com.example.demo.model.JobStatus;
 import com.example.demo.model.JobType;
+import com.example.demo.repository.ApplicationRepository;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.JobRepository;
 import com.example.demo.request.JobRequest;
@@ -27,6 +32,7 @@ public class JobServiceImp implements JobService {
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
     private final JobMapper jobMapper;
+    private final ApplicationRepository applicationRepository;
 
     @Override
     public JobDTO create(JobRequest request) {
@@ -85,5 +91,45 @@ public class JobServiceImp implements JobService {
                 .orElseThrow(() -> new ResourceNotFoundException("Job not found with id: " + id));
 
         return jobMapper.toDTO(job);
+    }
+
+    @Override
+    public List<JobDTO> getJobsOfEmployer() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Company company = companyRepository.findByUserEmail(username)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Company not found with username: " + username));
+
+        return jobRepository.findByCompanyIdOrderByCreatedAtDesc(company.getId())
+                .stream()
+                .map(job -> {
+                    JobDTO jobDTO = jobMapper.toDTO(job);
+                    long count = applicationRepository.countByJobId(job.getId());
+                    jobDTO.setTotalApplicants(count);
+                    return jobDTO;
+                })
+                .toList();
+    }   
+
+    public JobDTO createJobForMyCompany(JobRequest request) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Company company = companyRepository.findByUserEmail(username)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Company not found with username: " + username));
+
+        Job job = new Job();
+        job.setTitle(request.getTitle());
+        job.setDescription(request.getDescription());
+        job.setLocation(request.getLocation());
+        job.setSalaryMin(request.getSalaryMin());
+        job.setSalaryMax(request.getSalaryMax());
+        job.setJobType(request.getJobType());
+        job.setLevel(request.getLevel());
+        job.setStatus(JobStatus.DRAFT);
+        job.setCompany(company);
+        job.setCreatedAt(LocalDateTime.now());
+
+        return jobMapper.toDTO(jobRepository.save(job));
     }
 }

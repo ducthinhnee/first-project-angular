@@ -1,0 +1,98 @@
+<div class="p-4">
+  <h2 class="mb-1">Hello, Company</h2>
+  <p class="text-500 mb-4">Here is your daily activities and applications</p>
+
+  <!-- Stats -->
+  <div class="grid mb-5">
+    <div class="col-12 md:col-6">
+      <div class="p-4 surface-card border-round shadow-1 flex justify-content-between">
+        <div>
+          <div class="text-xl font-bold text-yellow-500">589</div>
+          <div class="text-500">Open Jobs</div>
+        </div>
+        <i class="pi pi-briefcase text-3xl text-primary"></i>
+      </div>
+    </div>
+
+    <div class="col-12 md:col-6">
+      <div class="p-4 surface-card border-round shadow-1 flex justify-content-between">
+        <div>
+          <div class="text-xl font-bold text-blue-500">2,517</div>
+          <div class="text-500">Saved Candidates</div>
+        </div>
+        <i class="pi pi-users text-3xl text-orange-400"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="surface-card border-round shadow-1 p-3">
+    <div class="flex justify-content-between align-items-center mb-3">
+      <h3 class="m-0">Recently Posted Jobs</h3>
+      <a class="text-primary cursor-pointer">View all →</a>
+    </div>
+
+    <p-table [value]="jobs()" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Jobs</th>
+          <th>Status</th>
+          <th>Applications</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-job>
+        <tr [class.border-primary]="job.title === 'Technical Support Specialist'">
+          <td>
+            <div class="font-medium">{{ job.title }}</div>
+            <small class="text-500">
+              {{ job.type }} ·
+              {{ job.remainingDays > 0 ? job.remainingDays + ' days remaining' : 'Expired' }}
+            </small>
+          </td>
+
+          <td>
+            <span
+              class="flex align-items-center gap-1"
+              [class.text-green-500]="job.status === 'ACTIVE'"
+              [class.text-red-500]="job.status === 'EXPIRED'"
+            >
+              <i
+                class="pi"
+                [ngClass]="{
+                  'pi-check-circle': job.status === 'ACTIVE',
+                  'pi-times-circle': job.status === 'EXPIRED'
+                }"
+              ></i>
+              {{ job.status === 'ACTIVE' ? 'Active' : 'Expire' }}
+            </span>
+          </td>
+
+          <td>
+            <i class="pi pi-users mr-1"></i>
+            {{ job.applications }} Applications
+          </td>
+
+          <td class="text-right">
+            <p-button
+              label="View Applications"
+              size="small"
+              [severity]="job.title === 'Technical Support Specialist' ? 'primary' : 'secondary'"
+              (click)="goToJob(job.id)"
+            ></p-button>
+
+            <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+
+            <button
+              pButton
+              icon="pi pi-ellipsis-v"
+              class="p-button-text"
+              (click)="menu.toggle($event)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
