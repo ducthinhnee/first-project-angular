@@ -1,70 +1,32 @@
 <p-card>
-    <h2 class="mb-4">Post a job</h2>
+    <h3 class="mb-4">Post a job</h3>
   
     <form [formGroup]="jobForm" class="grid">
   
       <!-- Job title -->
       <div class="col-12">
         <label>Job Title</label>
-        <input pInputText formControlName="title" class="w-full" />
+        <input pInputText formControlName="title" class="w-full mt-1" />
       </div>
   
       <!-- Tags + Role -->
       <div class="col-12 md:col-8">
-        <label>Tags</label>
-        <input pInputText formControlName="tags" class="w-full" />
-      </div>
-  
-      <div class="col-12 md:col-4">
-        <label>Job Role</label>
-        <p-autoComplete
-            formControlName="role"
-            [suggestions]="filteredRoles"
-            (completeMethod)="filteredRoles = filter($event, jobRoles)"
-            placeholder="Select role"
-            class="w-full"
-        />
+        <label>Location</label>
+        <input pInputText formControlName="location" class="w-full mt-1" />
       </div>
   
       <!-- Salary -->
-      <div class="col-12">
-        <h4 class="mt-3">Salary</h4>
-      </div>
-  
       <div class="col-12 md:col-4">
         <label>Min Salary</label>
-        <p-inputNumber formControlName="minSalary" class="w-full" />
+        <p-inputNumber formControlName="minSalary" class="w-full mt-1" />
       </div>
   
       <div class="col-12 md:col-4">
         <label>Max Salary</label>
-        <p-inputNumber formControlName="maxSalary" class="w-full" />
-      </div>
-  
-      <div class="col-12 md:col-4">
-        <label>Salary Type</label>
-        <p-autoComplete
-            formControlName="salaryType"
-            [suggestions]="filteredSalaryTypes"
-            (completeMethod)="filteredSalaryTypes = filter($event, salaryTypes)"
-            placeholder="Select salary type"
-            class="w-full"
-        />
+        <p-inputNumber formControlName="maxSalary" class="w-full mt-1" />
       </div>
   
       <!-- Advance info -->
-      <div class="col-12">
-        <h4 class="mt-3">Advance Information</h4>
-      </div>
-  
-      <div class="col-12 md:col-4">
-        <label>Education</label>
-      </div>
-  
-      <div class="col-12 md:col-4">
-        <label>Experience</label>
-      </div>
-  
       <div class="col-12 md:col-4">
         <label>Job Type</label>
         <p-autoComplete
@@ -72,23 +34,9 @@
             [suggestions]="filteredJobTypes"
             (completeMethod)="filteredJobTypes = filter($event, jobTypes)"
             placeholder="Select job type"
-            class="w-full"
+            class="w-full mt-1"
+            [dropdown]="true"
         />
-
-      </div>
-  
-      <div class="col-12 md:col-4">
-        <label>Vacancies</label>
-        <p-inputNumber formControlName="vacancies" class="w-full" />
-      </div>
-  
-      <div class="col-12 md:col-4">
-        <label>Expiration Date</label>
-        <!-- <p-datePicker
-            formControlName="expirationDate"
-            class="w-full"
-            dateFormat="dd/mm/yy"
-        /> -->
 
       </div>
   
@@ -99,45 +47,13 @@
             [suggestions]="filteredJobLevels"
             (completeMethod)="filteredJobLevels = filter($event, jobLevels)"
             placeholder="Select job level"
-            class="w-full"
+            class="w-full mt-1"
+            [dropdown]="true"
         />
       </div>
   
       <!-- Location -->
-      <div class="col-12">
-        <p-card class="surface-100">
-          <h4>Location</h4>
-  
-          <div class="grid">
-            <div class="col-12 md:col-6">
-              <label>Country</label>
-            </div>
-  
-            <div class="col-12 md:col-6">
-              <label>City</label>
-            </div>
-  
-            <div class="col-12">
-              <p-checkbox
-                formControlName="remote"
-                binary="true"
-                label="Fully Remote Position - Worldwide"
-              />
-            </div>
-          </div>
-        </p-card>
-      </div>
-  
-      <!-- Benefits -->
-      <div class="col-12">
-        <label>Job Benefits</label>
-        <p-multiSelect
-          [options]="benefits"
-          formControlName="benefits"
-          display="chip"
-          class="w-full"
-        />
-      </div>
+
   
       <!-- Description -->
       <div class="col-12">
@@ -146,7 +62,7 @@
           pInputTextarea
           rows="6"
           formControlName="description"
-          class="w-full"
+          class="w-full mt-1"
         ></textarea>
       </div>
   

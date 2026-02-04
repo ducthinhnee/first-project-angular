@@ -47,7 +47,11 @@ export class HeaderComponent {
       label: 'Profile',
       icon: 'pi pi-user',
       command: () => {
-        this.router.navigate(['/profile']);
+        if(this.user()?.role == 'CANDIDATE'){
+          this.router.navigate(['/profile']);
+        } else if (this.user()?.role == 'EMPLOYER'){
+          this.router.navigate(['/company']);
+        }
       }
     },
     {

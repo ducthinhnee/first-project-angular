@@ -32,7 +32,7 @@ export const routes: Routes = [
         path: 'company',
         loadChildren: () =>
           import('./features/companies/company.routes').then(
-            (m) => m.COMPANIES_ROUTES
+            (m) => m.COMPANIES_ROUTES 
           ),
       }
     ]

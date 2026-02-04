@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.demo.dto.JobDTO;
 import com.example.demo.model.JobLevel;
 import com.example.demo.model.JobType;
+import com.example.demo.request.ApplyJobRequest;
 import com.example.demo.request.JobRequest;
 
 public interface JobService {
@@ -32,4 +33,6 @@ public interface JobService {
     public List<JobDTO> getJobsOfEmployer();
 
     public JobDTO createJobForMyCompany(JobRequest request);
+
+    public void applyJob(ApplyJobRequest request);
 }

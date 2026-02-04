@@ -80,11 +80,6 @@ export class JobSearchComponent {
     this.loading.set(true);
 
     this.jobsService
-    //   .searchJobs({
-    //     ...this.draftFilters,
-    //     page: this.page(),
-    //     size: this.size,
-    //   })
       .searchJobs({
         keyword: this.draftFilters().keyword,
         location: this.draftFilters().location,
@@ -98,7 +93,7 @@ export class JobSearchComponent {
       .subscribe({
         next: (res) => {
           this.jobs.set(res.content);
-          this.totalPages.set(res.totalPages);
+          this.totalPages.set(res.totalElements);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
@@ -131,13 +126,6 @@ export class JobSearchComponent {
     this.appliedFilters.set(empty);
     this.page.set(0);
   }
-
-  //   updateDraft<K extends keyof typeof this.draftFilters extends infer T ? T : never>(
-  //     key: K,
-  //     value: any
-  //   ) {
-  //     this.draftFilters.update(f => ({ ...f, [key]: value }));
-  //   }
 
   updateDraft(key: string, value: any) {
     this.draftFilters.update((f) => ({

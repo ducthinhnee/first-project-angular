@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,5 +61,11 @@ public class ResumeController {
     public ResponseEntity<?> deleteResume(@PathVariable Long id) {
         resumeService.delete(id);
         return ResponseEntity.ok(Map.of("status", "ok", "message", "Resume deleted successfully"));
+    }
+
+    @Operation(summary = "Download Resource")
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<Resource> download(@PathVariable String fileName) {
+        return resumeService.downloadResume(fileName);
     }
 }

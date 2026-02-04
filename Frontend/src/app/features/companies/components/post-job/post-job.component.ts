@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
@@ -9,6 +9,9 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ButtonModule } from 'primeng/button';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DatePickerModule } from 'primeng/datepicker';
+import { Job } from '../../../jobs/models/job.model';
+import { CompanyJobsService } from '../../services/company.service';
+import { CompanyJobsStore } from '../../../../core/stores/company-jobs.store';
 
 @Component({
   selector: 'app-post-job',
@@ -26,55 +29,34 @@ import { DatePickerModule } from 'primeng/datepicker';
   ],
 })
 export class PostJobComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private store = inject(CompanyJobsStore);
+
   jobForm!: FormGroup;
 
-  jobRoles = ['Frontend', 'Backend', 'Fullstack'];
-  salaryTypes = ['Monthly', 'Yearly'];
-  jobTypes = ['Full-time', 'Part-time', 'Remote'];
-  jobLevels = ['Junior', 'Mid', 'Senior'];
+  jobTypes = ['FULL_TIME', 'PART_TIME', 'INTERN', 'CONTRACT'];
+  jobLevels = ['JUNIOR', 'MIDDLE', 'SENIOR'];
 
-  benefits = [
-    '401k Salary',
-    'Distributed Team',
-    'Medical Insurance',
-    'Unlimited Vacation',
-    'Company Retreats',
-  ];
-
-  filteredRoles: string[] = [];
-  filteredSalaryTypes: string[] = [];
   filteredJobTypes: string[] = [];
   filteredJobLevels: string[] = [];
+
+  loading = signal(false);
+  error = signal<string | null>(null);
 
   filter(event: any, source: string[]) {
     const query = event.query.toLowerCase();
     return source.filter((item) => item.toLowerCase().includes(query));
   }
 
-  constructor(private fb: FormBuilder) {}
-
   ngOnInit() {
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
-      tags: [''],
-      role: [null],
-      minSalary: [],
-      maxSalary: [],
-      salaryType: [null],
-
-      education: [null],
-      experience: [null],
-      jobType: [null],
-      vacancies: [],
-      expirationDate: [],
-      jobLevel: [null],
-
-      country: [null],
-      city: [null],
-      remote: [false],
-
-      benefits: [[]],
-      description: [''],
+      location: ['', Validators.required],
+      minSalary: ['', Validators.required],
+      maxSalary: ['', Validators.required],
+      jobType: ['', Validators.required],
+      jobLevel: ['', Validators.required],
+      description: ['', Validators.required],
     });
   }
 
@@ -84,6 +66,26 @@ export class PostJobComponent implements OnInit {
       return;
     }
 
-    console.log(this.jobForm.value);
+    const value = this.jobForm.value;
+    const payload: Job = {
+      id: 0,
+
+      title: value.title!,
+      companyName: value.companyName!,
+      location: value.location!,
+      description: value.description || undefined,
+
+      salaryMin: Number(value.salaryMin),
+      salaryMax: Number(value.salaryMax),
+
+      jobType: value.jobType as Job['jobType'],
+      level: value.level as Job['level'],
+      status: 'OPEN',
+
+      totalApplicants: value.totalApplicants ?? 0
+    };
+
+    this.store.createJob(payload);
+
   }
 }

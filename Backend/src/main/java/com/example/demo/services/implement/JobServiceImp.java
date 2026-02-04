@@ -6,22 +6,32 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.JobDTO;
 import com.example.demo.mapper.JobMapper;
+import com.example.demo.model.Application;
+import com.example.demo.model.ApplicationStatus;
 import com.example.demo.model.Company;
 import com.example.demo.model.Job;
 import com.example.demo.model.JobLevel;
 import com.example.demo.model.JobStatus;
 import com.example.demo.model.JobType;
+import com.example.demo.model.Resume;
+import com.example.demo.model.Role;
+import com.example.demo.model.User;
 import com.example.demo.repository.ApplicationRepository;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.JobRepository;
+import com.example.demo.repository.ResumeRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.request.ApplyJobRequest;
 import com.example.demo.request.JobRequest;
 import com.example.demo.services.JobService;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +43,8 @@ public class JobServiceImp implements JobService {
     private final CompanyRepository companyRepository;
     private final JobMapper jobMapper;
     private final ApplicationRepository applicationRepository;
+    private final ResumeRepository resumeRepository;
+    private final UserRepository userRepository;
 
     @Override
     public JobDTO create(JobRequest request) {
@@ -109,7 +121,7 @@ public class JobServiceImp implements JobService {
                     return jobDTO;
                 })
                 .toList();
-    }   
+    }
 
     public JobDTO createJobForMyCompany(JobRequest request) {
 
@@ -126,10 +138,50 @@ public class JobServiceImp implements JobService {
         job.setSalaryMax(request.getSalaryMax());
         job.setJobType(request.getJobType());
         job.setLevel(request.getLevel());
-        job.setStatus(JobStatus.DRAFT);
+        job.setStatus(JobStatus.OPEN);
         job.setCompany(company);
         job.setCreatedAt(LocalDateTime.now());
 
         return jobMapper.toDTO(jobRepository.save(job));
+    }
+
+    @Override
+    @Transactional
+    public void applyJob(ApplyJobRequest request) {
+
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getRole() != Role.CANDIDATE) {
+            throw new AccessDeniedException("Only candidate can apply job");
+        }
+
+        Job job = jobRepository.findById(request.getJobId())
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
+
+        if (job.getStatus() != JobStatus.OPEN) {
+            throw new BadRequestException("Job is not open");
+        }
+
+        if (applicationRepository.existsByJobIdAndCandidateId(job.getId(), user.getId())) {
+            throw new BadRequestException("You already applied this job");
+        }
+
+        Resume resume = resumeRepository.findById(request.getResumeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Resume not found"));
+
+        Application application = Application.builder()
+                .job(job)
+                .candidate(user)
+                .resume(resume)
+                .status(ApplicationStatus.APPLIED)
+                .appliedAt(LocalDateTime.now())
+                .build();
+
+        applicationRepository.save(application);
     }
 }

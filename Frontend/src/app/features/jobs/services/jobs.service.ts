@@ -141,4 +141,11 @@ export class JobsService {
       queryParams
     );
   }
+
+  applyJob(payload: { jobId: number; resumeId: number }) {
+    return this.api.post<void>(
+      `${this.BASE_URL}/candidate/apply`,
+      payload
+    );
+  }
 }

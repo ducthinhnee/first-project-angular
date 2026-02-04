@@ -1,43 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CompanyJob } from '../models/company-job.model';
+import { ApiService } from '../../../core/services/api.service';
+import { Job } from '../../jobs/models/job.model';
+import { Applicant } from '../models/applicant.model';
 
 @Injectable({ providedIn: 'root' })
 export class CompanyJobsService {
-  getOverviewJobs(): Observable<CompanyJob[]> {
-    return of([
-      {
-        id: 1,
-        title: 'UI/UX Designer',
-        type: 'Full Time',
-        remainingDays: 27,
-        status: 'ACTIVE',
-        applications: 798,
-      },
-      {
-        id: 2,
-        title: 'Senior UX Designer',
-        type: 'Internship',
-        remainingDays: 8,
-        status: 'ACTIVE',
-        applications: 185,
-      },
-      {
-        id: 3,
-        title: 'Technical Support Specialist',
-        type: 'Part Time',
-        remainingDays: 4,
-        status: 'ACTIVE',
-        applications: 556,
-      },
-      {
-        id: 4,
-        title: 'Front End Developer',
-        type: 'Full Time',
-        remainingDays: 0,
-        status: 'EXPIRED',
-        applications: 740,
-      },
-    ]);
+  private readonly BASE_URL = '/api/v1/jobs';
+
+  constructor(private api: ApiService) {}
+
+  getOverviewJobs(): Observable<Job[]> {
+    return this.api.get<Job[]>(`${this.BASE_URL}/my-company`);
+  }
+
+  createCompanyJob(payload: Job) {
+    return this.api.post<Job>(`${this.BASE_URL}/my-company`, payload);
+  }
+
+  getApplicants(jobId: number) {
+    return this.api.get<Applicant[]>(
+      `http://localhost:4200/api/v1/company/jobs/${jobId}/applicants`
+    );
   }
 }

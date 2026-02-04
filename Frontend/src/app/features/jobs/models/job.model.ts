@@ -11,4 +11,6 @@ export interface Job {
   jobType: 'FULL_TIME' | 'PART_TIME' | 'INTERNSHIP';
   level: 'JUNIOR' | 'MIDDLE' | 'SENIOR';
   status: 'OPEN' | 'CLOSED';
+
+  totalApplicants?: number;
 }

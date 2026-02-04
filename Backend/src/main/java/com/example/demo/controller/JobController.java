@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.JobDTO;
 import com.example.demo.model.JobLevel;
 import com.example.demo.model.JobType;
+import com.example.demo.request.ApplyJobRequest;
 import com.example.demo.request.JobRequest;
 import com.example.demo.services.JobService;
 
@@ -129,6 +130,14 @@ public class JobController {
         })
         public JobDTO createJobCompany(@Valid @RequestBody JobRequest request) {
                 return jobService.createJobForMyCompany(request);
+        }
+
+        @PostMapping("/candidate/apply")
+        @PreAuthorize("hasRole('CANDIDATE')")
+        @Operation(summary = "Apply job for candidate", security = @SecurityRequirement(name = "bearerAuth"))
+        public ResponseEntity<?> applyJob(@RequestBody @Valid ApplyJobRequest request) {
+                jobService.applyJob(request);
+                return ResponseEntity.ok("Apply job successfully");
         }
 
 }

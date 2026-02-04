@@ -7,7 +7,7 @@
     <div class="col-12 md:col-6">
       <div class="p-4 surface-card border-round shadow-1 flex justify-content-between">
         <div>
-          <div class="text-xl font-bold text-yellow-500">589</div>
+          <div class="text-xl font-bold text-yellow-500">{{ jobs().length }}</div>
           <div class="text-500">Open Jobs</div>
         </div>
         <i class="pi pi-briefcase text-3xl text-primary"></i>
@@ -17,7 +17,7 @@
     <div class="col-12 md:col-6">
       <div class="p-4 surface-card border-round shadow-1 flex justify-content-between">
         <div>
-          <div class="text-xl font-bold text-blue-500">2,517</div>
+          <div class="text-xl font-bold text-blue-500">{{totalApplicants()}}</div>
           <div class="text-500">Saved Candidates</div>
         </div>
         <i class="pi pi-users text-3xl text-orange-400"></i>
@@ -47,8 +47,8 @@
           <td>
             <div class="font-medium">{{ job.title }}</div>
             <small class="text-500">
-              {{ job.type }} ·
-              {{ job.remainingDays > 0 ? job.remainingDays + ' days remaining' : 'Expired' }}
+              {{ job.jobType }} - 
+              {{ job.location}}
             </small>
           </td>
 
@@ -57,28 +57,30 @@
               class="flex align-items-center gap-1"
               [class.text-green-500]="job.status === 'ACTIVE'"
               [class.text-red-500]="job.status === 'EXPIRED'"
+              [class.text-orange-500]="job.status === 'DRAFT'"
             >
               <i
                 class="pi"
                 [ngClass]="{
                   'pi-check-circle': job.status === 'ACTIVE',
+                  'pi-clock': job.status === 'DRAFT',
                   'pi-times-circle': job.status === 'EXPIRED'
                 }"
               ></i>
-              {{ job.status === 'ACTIVE' ? 'Active' : 'Expire' }}
+              {{ job.status }}
             </span>
           </td>
 
           <td>
             <i class="pi pi-users mr-1"></i>
-            {{ job.applications }} Applications
+            {{ job.totalApplicants  }} Applications
           </td>
 
           <td class="text-right">
             <p-button
               label="View Applications"
               size="small"
-              [severity]="job.title === 'Technical Support Specialist' ? 'primary' : 'secondary'"
+              [severity]="'secondary'"
               (click)="goToJob(job.id)"
             ></p-button>
 

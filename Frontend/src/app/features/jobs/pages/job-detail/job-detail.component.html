@@ -27,6 +27,7 @@
             pButton
             label="Apply Now"
             icon="pi pi-arrow-right"
+            (click)="openApplyDialog()"
           ></button>
         </div>
 
@@ -102,4 +103,59 @@
   
     </div>
   </section>
+
+  <p-dialog
+    header="Apply Job"
+    [(visible)]="showApplyDialog"
+    [modal]="true"
+    [style]="{ width: '400px' }">
+
+    <div class="flex flex-column gap-3">
+      @if(errorMsg()){
+        <p-message severity="error" text="{{ errorMsg() }}"></p-message>
+      }
+      @if(successMsg()){
+        <p-message severity="success" text="{{ successMsg() }}"></p-message>
+      }
+      <label>Select Resume</label>
+
+      <p-autoComplete
+        [(ngModel)]="selectedResume"
+        [suggestions]="filteredResumes"
+        (completeMethod)="filterResumes($event)"
+        optionLabel="fileUrl"
+        placeholder="Choose resume"
+        class="w-full">
+
+        <ng-template let-item pTemplate="item">
+          {{ getFileName(item.fileUrl) }}
+        </ng-template>
+
+        <ng-template let-item pTemplate="selectedItem">
+          {{ getFileName(item.fileUrl) }}
+        </ng-template>
+      </p-autoComplete>
+
+      <button
+        pButton
+        label="Apply"
+        class="mt-3"
+        [disabled]="!selectedResume"
+        [loading]="applyLoading()"
+        (click)="applyJob(jobId)">
+      </button>
+
+      <div class="col-12">
+        <p-fileUpload
+          mode="basic"
+          chooseLabel="Add CV / Resume"
+          [auto]="false"
+          [customUpload]="true"
+          [disabled]="loading()"
+          (onSelect)="onUpload($event)"
+        ></p-fileUpload>
+      </div>
+
+    </div>
+  </p-dialog>
   

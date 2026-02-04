@@ -20,6 +20,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -119,5 +124,27 @@ public class ResumeServiceImpl implements ResumeService {
         }
 
         resumeRepository.delete(resume);
+    }
+
+    @Override
+    public ResponseEntity<Resource> downloadResume(String fileName) {
+
+        try {
+            Path path = Paths.get(uploadDir).resolve(fileName).normalize();
+            Resource resource = new UrlResource(path.toUri());
+
+            if (!resource.exists()) {
+                throw new ResourceNotFoundException("File not found");
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+
+        } catch (Exception e) {
+            throw new FileUploadException("Download failed");
+        }
     }
 }
